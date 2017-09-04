@@ -47,4 +47,13 @@ function sys.tableHasValue(tab, val)
     return false
 end
 
+function sys.getIndexOf(tab, val)
+	for i=1, i < #tab do
+		if tab[i] == val then
+			return i
+		end
+	end
+	log(val.." was not found inside table.")
+end
+
 return sys

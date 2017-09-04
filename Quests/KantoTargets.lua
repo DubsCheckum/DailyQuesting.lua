@@ -25,7 +25,7 @@ targets = {
 	["Tentacool"]  = {"Route 10", ["huntType"] = {"WATER",""}},
 	["Venonat"]    = {"Route 12", ["huntType"] = {"GRASS",""}},
 	["Weedle"]     = {"Viridian Forest", ["huntType"] = {"GRASS",""}},
-	["Zubat"]      = {"Rock Tunnel 1", ["huntType"] = {"NEAREXIT","Route 10"}},
+	["Zubat"]      = {"Digletts Cave Entrance 2", ["huntType"] = {"NEAREXIT","Route 10"}},
 	
 	--Item = {Location, coords = {x,y}},
 	

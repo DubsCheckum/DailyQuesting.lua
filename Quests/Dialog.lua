@@ -5,7 +5,7 @@
 
 local sys = require "Libs/syslib"
 
-local Dialog = {state = false, text = {}}
+local Dialog = {state = false, text = {}, match = nil}
 
 function Dialog:new(text)
 	local o = {}

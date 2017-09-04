@@ -39,6 +39,59 @@ function Quest:mapToFunction()
 	return mapFunction
 end
 
+function Quest:standardMove(back, forward)
+	if self.dialogs.targetKnown.state 
+		and not self.targetFound 
+		and not self:needPokecenter()
+	then
+		if type(forward) == "table" then
+			return moveToCell(forward[1], forward[2])
+		end
+		return moveToMap(forward)
+	else
+		if type(back) == "table" then
+			return moveToCell(back[1], back[2])
+		end
+		return moveToMap(back)
+	end
+end
+
+function Quest:standardHunt(back, huntType)
+	if not self:targetPokeFound() then
+		huntType = huntType:lower()
+		if huntType == "grass" then
+			return moveToGrass()
+		elseif huntType == "water" then
+			return moveToWater()
+		elseif huntType == "cave" then
+			return moveToNormalGround()
+		else
+			sys.error("Quest:StandardHunt", "HuntType of ["..huntType.."] is not valid")
+		end
+	end
+	return moveToMap(back)
+end
+
+function Quest:targetPokeFound()
+	if self.target ~= nil then
+		for i=1, getTeamSize() do
+			if getPokemonName(i) == self.target then
+				if getPokemonIndividualValue(i,"ATK")
+					+ getPokemonIndividualValue(i,"DEF")
+					+ getPokemonIndividualValue(i,"SPATK")
+					+ getPokemonIndividualValue(i,"SPDEF")
+					+ getPokemonIndividualValue(i,"SPD")
+					+ getPokemonIndividualValue(i,"HP")
+					>= minIVs
+				then
+					self.targetFound = true
+					return i
+				end
+			end
+		end
+	end
+	return false
+end
 
 -- function Quest:moveToTargetMap()
 	-- local maps = targets[target][maps]
@@ -163,6 +216,20 @@ function Quest:leftovers()
 	end
 end
 
+function Quest:useBike()
+	if hasItem("Bicycle") then
+		if isOutside() and not isMounted() and not isSurfing() and getMapName() ~= "Cianwood City" and getMapName() ~= "Route 41" then
+			useItem("Bicycle")
+			log("Using: Bicycle")
+			return true --Mounting the Bike
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+
 function Quest:startTraining()
 	self.training = true
 end
@@ -181,26 +248,10 @@ function Quest:needPokemart()
 end
 
 function Quest:needPokecenter()
-	if getTeamSize() == 1 then
-		if getPokemonHealthPercent(1) <= 50 then
-			return true
-		end
-	-- else we would spend more time evolving the higher level ones
-	elseif not self:isTrainingOver() then
-		if getUsablePokemonCount() <= 1
-			or game.getUsablePokemonCountUnderLevel(self.level) == 0
-		then
-			return true
-		end
-	else
-		if not game.isTeamFullyHealed() then
-			if self.healPokemonOnceTrainingIsOver then
-				return true
-			end
-		else
-			-- the team is healed and we do not need training
-			self.healPokemonOnceTrainingIsOver = false
-		end
+	if getPokemonHealthPercent(1) < 25
+		--or (getTeamSize() == 6 and not self:targetPokeFound())
+	then
+		return true
 	end
 	return false
 end
@@ -209,41 +260,18 @@ function Quest:message()
 	return self.name .. ': ' .. self.description
 end
 
--- I'll need a TeamManager class very soon
-local moonStoneTargets = {
-	"Clefairy",
-	"Jigglypuff",
-	"Munna",
-	"Nidorino",
-	"Nidorina",
-	"Skitty"
-}
-
-function Quest:evolvePokemon()
-	local hasMoonStone = hasItem("Moon Stone")
-	for pokemonId=1, getTeamSize(), 1 do
-		local pokemonName = getPokemonName(pokemonId)
-		if hasMoonStone
-			and sys.tableHasValue(moonStoneTargets, pokemonName)
-		then
-			return useItemOnPokemon("Moon Stone", pokemonId)
-		end
-	end
-	return false
-end
-
 function Quest:path()
 	if self.inBattle then
 		self.inBattle = false
 		self:battleEnd()
 	end
-	if self:evolvePokemon() then
-		return true
-	end
-	if not isTeamSortedByLevelAscending() then
-		return sortTeamByLevelAscending()
+	if not isTeamSortedByLevelDescending() then
+		return sortTeamByLevelDescending()
 	end
 	if self:leftovers() then
+		return true
+	end
+	if self:useBike() then
 		return true
 	end
 	local mapFunction = self:mapToFunction()
@@ -264,11 +292,10 @@ function Quest:battleEnd()
 end
 
 function Quest:wildBattle()
-	if isOpponentShiny() then
-		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
-			return true
-		end
-	elseif not isAlreadyCaught() then
+	if isOpponentShiny() 
+		or not isAlreadyCaught() 
+		or getOpponentForm() ~= 0
+	then
 		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
 			return true
 		end
@@ -346,7 +373,8 @@ end
 local hmMoves = {
 	"cut",
 	"surf",
-	"flash"
+	"flash",
+	"dig"
 }
 
 function Quest:learningMove(moveName, pokemonIndex)

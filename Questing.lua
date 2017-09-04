@@ -8,7 +8,6 @@ author = "DubsCheckum, framework by g0ld"
 description = [[Every Daily Quest.]]
 
 dofile "config.lua"
-dofile "Quests/KantoTargets.lua"
 
 local QuestManager
 local questManager = nil
