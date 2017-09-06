@@ -44,7 +44,7 @@ function CeladonQuest:isDoable()
 	if self:hasMap() then
 		return true
 	end
-	return false
+	return pf.moveTo("Celadon City")
 end
 
 function CeladonQuest:isDone()
@@ -91,22 +91,8 @@ function CeladonQuest:CeladonHouse()
 	end
 end
 
-function CeladonQuest:PokecenterCerulean()
-	self:pokecenter("Cerulean City")
-end
-
-
-function CeladonQuest:PokecenterLavender()
-	return self:pokecenter("Lavender Town")
-end
-
-function CeladonQuest:Route6()
-	sys.todo("Collect berries")
-	self:standardMove("Route 6 Stop House", "Vermilion City")
-end
-
-function CeladonQuest:PokecenterVermilion()
-	self:pokecenter("Vermilion City")
+function CeladonQuest()
+	
 end
 
 return CeladonQuest

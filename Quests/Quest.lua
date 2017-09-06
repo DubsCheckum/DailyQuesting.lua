@@ -95,22 +95,6 @@ function Quest:targetPokeFound()
 	return false
 end
 
--- function Quest:moveToTargetMap()
-	-- local maps = targets[target][maps]
-	-- for i=#maps, 1, -1 do
-		-- local inRect = maps[i][inRect]
-		-- if inRect ~= nil then
-			-- if game.inRectangle() and getMapName() == inRect[5] then
-				-- if maps[i - 1][inRect] then
-					-- moveToMap(maps[i - 1])
-				-- end
-			-- end
-		-- elseif getMapName() == maps[i] then
-			-- moveToMap(maps[i - 1])
-		-- end
-	-- end
--- end
-
 function Quest:hasMap()
 	local mapFunction = self:mapToFunction()
 	if self[mapFunction] then
@@ -275,6 +259,10 @@ function Quest:path()
 	end
 	if self:useBike() then
 		return true
+	end
+	if getMapName() == target[1] then
+		self[targetMap](self)
+		log("we made it boiz")
 	end
 	local mapFunction = self:mapToFunction()
 	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. getMapName())
