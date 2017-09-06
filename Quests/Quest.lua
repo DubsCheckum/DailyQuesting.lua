@@ -1,4 +1,4 @@
--- Copyright © 2017 DubsCheckum <dubs@noemail>
+-- Copyright © 2017 DubsCheckum <m3rcury@tuta.io>
 -- This work is free. You can redistribute it and/or modify it under the
 -- terms of the Do What The Fuck You Want To Public License, Version 2,
 -- as published by Sam Hocevar. See the COPYING file for more details.
@@ -295,6 +295,7 @@ function Quest:wildBattle()
 	if isOpponentShiny() 
 		or not isAlreadyCaught() 
 		or getOpponentForm() ~= 0
+		or getOpponentName() == self.target
 	then
 		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
 			return true
@@ -302,20 +303,9 @@ function Quest:wildBattle()
 	end
 	
 	-- if we do not try to catch it
-	if getTeamSize() == 1 or getUsablePokemonCount() > 1 then
-		local opponentLevel = getOpponentLevel()
-		local myPokemonLvl  = getPokemonLevel(getActivePokemonNumber())
-		if opponentLevel >= myPokemonLvl then
-			local requestedId, requestedLevel = game.getMaxLevelUsablePokemon()
-			if requestedId ~= nil and requestedLevel > myPokemonLvl then
-				return sendPokemon(requestedId)
-			end
-		end
-		return attack() or sendUsablePokemon() or run() or sendAnyPokemon()
+	if not self.canRun then
+		return attack() or game.useAnyMove()
 	else
-		if not self.canRun then
-			return attack() or game.useAnyMove()
-		end
 		return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
 	end
 end

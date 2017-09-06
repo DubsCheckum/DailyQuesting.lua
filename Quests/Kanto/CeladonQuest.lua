@@ -7,6 +7,7 @@ local sys    = require "Libs/syslib"
 local game   = require "Libs/gamelib"
 local Quest  = require "Quests/Quest"
 local Dialog = require "Quests/Dialog"
+local pf     = require "Pathfinder/MoveToApp"
 
 local name		  = "Celadon Daily Quest"
 local description = "Going to Celadon to complete the Task Master's task"
