@@ -39,6 +39,8 @@ function Quest:mapToFunction()
 	return mapFunction
 end
 
+
+
 function Quest:standardMove(back, forward)
 	if self.dialogs.targetKnown.state 
 		and not self.targetFound 
