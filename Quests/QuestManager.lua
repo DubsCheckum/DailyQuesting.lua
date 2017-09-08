@@ -5,7 +5,7 @@
 
 local QuestManager = {}
 
-local CeladonQuest        = require "Quests/Kanto/CeladonQuest"
+local CeladonQuest = require "Quests/Kanto/CeladonQuest"
 
 local quests = {
 	CeladonQuest:new()
