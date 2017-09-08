@@ -7,8 +7,6 @@ local sys  = require "Libs/syslib"
 local game = require "Libs/gamelib"
 --dofile "Quests/KantoTargets.lua"
 
-local blacklist = require "blacklist"
-
 local Quest = {}
 
 function Quest:new(name, description, level, dialogs)
@@ -38,8 +36,6 @@ function Quest:mapToFunction()
 	mapFunction = sys.removeCharacter(mapFunction, '.')
 	return mapFunction
 end
-
-
 
 function Quest:standardMove(back, forward)
 	if self.dialogs.targetKnown.state 
@@ -267,10 +263,6 @@ function Quest:path()
 	local mapFunction = self:mapToFunction()
 	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. getMapName())
 	self[mapFunction](self)
-end
-
-function Quest:isPokemonBlacklisted(pokemonName)
-	return sys.tableHasValue(blacklist, pokemonName)
 end
 
 function Quest:battleBegin()

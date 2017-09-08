@@ -5,10 +5,12 @@
 
 local QuestManager = {}
 
-local CeladonQuest = require "Quests/Kanto/CeladonQuest"
+local CeladonQuest      = require "Quests/Kanto/CeladonQuest"
+local DaycareKantoQuest = require "Quests/Kanto/DaycareKantoQuest"
 
 local quests = {
-	CeladonQuest:new()
+	CeladonQuest:new(),
+	DaycareKantoQuest:new()
 }
 
 function QuestManager:new(o)
