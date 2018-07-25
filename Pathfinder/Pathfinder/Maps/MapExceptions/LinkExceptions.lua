@@ -1,5 +1,26 @@
 local linkExce = {}
 
+linkExce["Celadon City_A"] = {
+    ["Route 16_B"] = {0, 41},
+}
+linkExce["Route 5 Stop House"] = {
+    ["Saffron City"] = {3, 12},
+}
+linkExce["Route 6 Stop House"] = {
+    ["Saffron City"] = {3, 2},
+}
+linkExce["Route 7 Stop House"] = {
+    ["Saffron City"] = {10, 7},
+}
+linkExce["Route 8 Stop House"] = {
+    ["Saffron City"] = {0, 6},
+}
+linkExce["Route 11"] = {
+    ["Route 11 Stop House"] = {83, 18},
+}
+linkExce["Route 22"] = {
+    ["Pokemon League Reception Gate"] = {9, 8},
+}
 linkExce["Route 2 Stop3"] = {
     ["Route 2_B"] = {3, 2}, -- top
     ["Route 2_D"] = {3, 12} -- down
@@ -7,6 +28,9 @@ linkExce["Route 2 Stop3"] = {
 linkExce["Tohjo Falls"] = {
     ["Route 27_A"] = {23, 32}, -- left
     ["Route 27_B"] = {46, 32} -- right
+}
+linkExce["Pewter City"] = {
+    ["Route 3"] = {65, 33}
 }
 linkExce["Mt. Moon B2F_A"] = {
     ["Mt. Moon B1F_B"] = {17, 27}, -- left, towards route 4
@@ -23,7 +47,8 @@ linkExce["Route 4"] = {
 }
 linkExce["Cerulean City_A"] = {
     ["Route 5_A"] = {17, 50}, -- daycare
-    ["Route 5_B"] = {22, 50} -- fastest path
+    ["Route 5_B"] = {22, 50}, -- fastest path
+    ["Route 9"] = {58, 29}
 }
 linkExce["Route 25"] = {
     ["Route 24_A"] = {9, 30}, -- water side to cerulean cave
@@ -33,6 +58,9 @@ linkExce["Route 25"] = {
 linkExce["Route 9"] = {
     ["Route 10_A"] = {85, 33}, -- pokecenter
     ["Route 10_B"] = {91, 33} -- power plant
+}
+linkExce["Route 10_A"] = {
+    ["Rock Tunnel 1_A"] = {11, 5}
 }
 linkExce["Rock Tunnel 1_B"] = {
     ["Rock Tunnel 2_A"] = {7, 7}, -- top left
@@ -907,6 +935,12 @@ linkExce["Valley Of Steel_B"] = {
     ["Cave Of Steel 1F_B"] = {49, 30},
     ["Cave Of Steel 1F_C"] = {59, 54},
 }
+linkExce["Pacifidlog Town"] = {
+	["Route 131"] = {40, 13},
+}
+linkExce["Route 130_A"] = {
+	["Route 131"] = {0, 34},
+}
 
 ----------------------
 ---- SEVII ISLANDS ---
@@ -1001,7 +1035,18 @@ linkExce["Frozen Cave B1F"] = {
     ["Frozen Cave B2F_B"] = {54, 24},
     ["Frozen Cave B2F_C"] = {28, 24},
 }
+--------------------
+--------SINNOH------
+--------------------
 
+linkExce["Route 204"] = {
+    ["Ravaged Path_A"] = {10, 34},
+    ["Ravaged Path_B"] = {19, 26},
+}
+linkExce["Ravaged Path"] = {
+    ["Route 204_A"] = {21, 46},
+    ["Route 204_B"] = {30, 41},
+}
 -- linkExce[""] = {
 --     [""] = {},
 -- }

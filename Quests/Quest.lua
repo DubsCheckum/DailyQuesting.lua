@@ -1,4 +1,4 @@
--- Copyright © 2017 DubsCheckum <dubs@noemail>
+-- Copyright © 2017 DubsCheckum <m3rcury@tuta.io>
 -- This work is free. You can redistribute it and/or modify it under the
 -- terms of the Do What The Fuck You Want To Public License, Version 2,
 -- as published by Sam Hocevar. See the COPYING file for more details.
@@ -6,8 +6,6 @@
 local sys  = require "Libs/syslib"
 local game = require "Libs/gamelib"
 --dofile "Quests/KantoTargets.lua"
-
-local blacklist = require "blacklist"
 
 local Quest = {}
 
@@ -92,22 +90,6 @@ function Quest:targetPokeFound()
 	end
 	return false
 end
-
--- function Quest:moveToTargetMap()
-	-- local maps = targets[target][maps]
-	-- for i=#maps, 1, -1 do
-		-- local inRect = maps[i][inRect]
-		-- if inRect ~= nil then
-			-- if game.inRectangle() and getMapName() == inRect[5] then
-				-- if maps[i - 1][inRect] then
-					-- moveToMap(maps[i - 1])
-				-- end
-			-- end
-		-- elseif getMapName() == maps[i] then
-			-- moveToMap(maps[i - 1])
-		-- end
-	-- end
--- end
 
 function Quest:hasMap()
 	local mapFunction = self:mapToFunction()
@@ -274,13 +256,13 @@ function Quest:path()
 	if self:useBike() then
 		return true
 	end
+	if getMapName() == target[1] then
+		self[targetMap](self)
+		log("we made it boiz")
+	end
 	local mapFunction = self:mapToFunction()
 	assert(self[mapFunction] ~= nil, self.name .. " quest has no method for map: " .. getMapName())
 	self[mapFunction](self)
-end
-
-function Quest:isPokemonBlacklisted(pokemonName)
-	return sys.tableHasValue(blacklist, pokemonName)
 end
 
 function Quest:battleBegin()
@@ -295,6 +277,7 @@ function Quest:wildBattle()
 	if isOpponentShiny() 
 		or not isAlreadyCaught() 
 		or getOpponentForm() ~= 0
+		or getOpponentName() == self.target
 	then
 		if useItem("Ultra Ball") or useItem("Great Ball") or useItem("Pokeball") then
 			return true
@@ -302,20 +285,9 @@ function Quest:wildBattle()
 	end
 	
 	-- if we do not try to catch it
-	if getTeamSize() == 1 or getUsablePokemonCount() > 1 then
-		local opponentLevel = getOpponentLevel()
-		local myPokemonLvl  = getPokemonLevel(getActivePokemonNumber())
-		if opponentLevel >= myPokemonLvl then
-			local requestedId, requestedLevel = game.getMaxLevelUsablePokemon()
-			if requestedId ~= nil and requestedLevel > myPokemonLvl then
-				return sendPokemon(requestedId)
-			end
-		end
-		return attack() or sendUsablePokemon() or run() or sendAnyPokemon()
+	if not self.canRun then
+		return attack() or game.useAnyMove()
 	else
-		if not self.canRun then
-			return attack() or game.useAnyMove()
-		end
 		return run() or attack() or sendUsablePokemon() or sendAnyPokemon()
 	end
 end

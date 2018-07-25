@@ -59,4 +59,11 @@ PokemartList["Mart Four Island"] = {[1] = {3, 4, 0}}
 PokemartList["Pokemart Six Island"] = {[1] = {3, 5, 0}}
 PokemartList["Mart Seven Island"] = {[1] = {3, 4, 0}}
 
+--SINNOH POKEMARTS
+PokemartList["Mart Sandgem Town"] = {[1] = {3,6,0}}
+PokemartList["Mart Jubilife City"] = {[1] = {3,6,0}}
+PokemartList["Mart Oreburgh City"] = {[1] = {3,6,0}}
+PokemartList["Mart Floaroma"] = {[1] = {3,6,0}}
+PokemartList["Mart Eterna City"] = {[1] = {3,6,0}}
+
 return PokemartList
