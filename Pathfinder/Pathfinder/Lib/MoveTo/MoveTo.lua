@@ -20,7 +20,7 @@ local elevatorExceptions  = require (cppdpath .. "Maps/MapExceptions/Elevators")
 local transmatExceptions  = require (cppdpath .. "Maps/MapExceptions/Transmats")
 local moveAbilities       = {["cut"] = 0, ["surf"] = 0, ["dig"] = 155, ["rock smash"] = 0, ["dive"] = 155}
 local workAbilities       = {["headbutt"] = 155, ["dig"] = 0}
-local moveItems           = {"Fresh Water", "Marsh Badge", "Zephyr Badge", "Bicycle", "Go-Goggles"}
+local moveItems           = {"Fresh Water", "Marsh Badge", "Zephyr Badge", "Bicycle", "Go-Goggles", "Green Bicycle", "Blue Bicycle", "Yellow Bicycle"}
 local globalMap           = {}
 local pathSolution        = {}
 local settings            = {}
@@ -31,13 +31,6 @@ local playerNode          = nil
 local from                = nil
 local toMap               = nil
 local digIndex            = nil
-
--- Maps that are labeled as "Link" from the parent map
-local badMapNames =
-{
--- ["Parent map"] = {"Link with bad name", "Another link with bad name"}
-["Route 22"] = {"Pokemon League Reception Gate"}
-}
 
 -----------------------------------
 ----- A* NECESSARY  FUNCTIONS -----
@@ -179,21 +172,22 @@ local function handleException(n1, n2)
     end
 end
 
--- return the node coresponding to the current player pos.
+-- return the node coresponding to the current player pos. Also used to return the current map, with submap tag if applicable
 local function getPlayerNode(map)
-    local playerInRectangle = Lib.inRectangle(getPlayerX(), getPlayerY())
-    if subMaps[map] then
-        for subMap, locs in pairs(subMaps[map]) do
-            for _, rect in ipairs(locs) do
-                if playerInRectangle(table.unpack(rect)) then
-                    return subMap
-                end
-            end
-        end
-    error("Pathfinder --> sub map could not be defined, map: " .. map .. "  x: " .. getPlayerX() .. "  y: " .. getPlayerY())
-    end
-    assert(globalMap[map], "Pathfinder -> Starting location does not exist in the map: " .. tostring(map))
-    return map
+	map = map or getMapName()
+	local playerInRectangle = Lib.inRectangle(getPlayerX(), getPlayerY())
+	if subMaps[map] then
+		for subMap, locs in pairs(subMaps[map]) do
+			for _, rect in ipairs(locs) do
+				if playerInRectangle(table.unpack(rect)) then
+					return subMap
+				end
+			end
+		end
+		error("Pathfinder --> sub map could not be defined, map: " .. map .. "  x: " .. getPlayerX() .. "  y: " .. getPlayerY())
+	end
+	assert(globalMap[map], "Pathfinder -> Location does not exist in the map: " .. tostring(map))
+	return map
 end
 
 -- create a new list replacing maps by all nodes corresponding to them
@@ -251,23 +245,27 @@ local function resetPath()
     destStore = ""
 end
 
+local function errorInPath(from, toMap)
+	resetPath()
+	Lib.log1time("Pathfinder --> Error in Path: from " .. from .. " to " .. toMap .. " -- Reset and Recalc")
+	swapPokemon(getTeamSize(), getTeamSize() - 1)
+end
+
 -- try to move with exception, and with the map name if no exception are found.
 local function movingApply(from, toMap)
+	if not isSameMap(from, getMapName()) then
+		-- Unexpectedly changed maps, could be due to black-out or moveToGrass/Water/NormalGround putting us on a link
+		errorInPath(from, toMap)
+		return true
+	end
 	Lib.log1time("Path: Maps Remains: " .. #pathSolution .. "  Moving To: --> " .. toMap)
 	if handleException(from, toMap) then
 		return true
 	else
-		if badMapNames[from] and Lib.inTable(badMapNames[from], toMap) then
-			toMap = "Link"
+		if not moveToMap(toMap:gsub("_%u$", "")) then -- remove subMap tag
+			errorInPath(from, toMap)
 		end
-		if moveToMap(toMap:gsub("_%u$", "")) then -- remove subMap tag
-			return true
-		else
-			resetPath()
-			Lib.log1time("Pathfinder --> Error in Path: from " .. from .. " to " .. toMap .. " -- Reset and Recalc")
-			swapPokemon(getTeamSize(), getTeamSize() - 1)
-			return true
-		end
+		return true
 	end
 end
 
@@ -458,9 +456,10 @@ registerHook("onStop", onPathfinderStop)
 
 -- return table for users
 return {
-    moveTo = moveTo,
-    getPath = getPath,
-    enableDigPath = enableDigPath,
-    disableDigPath = disableDigPath,
-    isDigPathEnabled = isDigPathEnabled,
+	moveTo = moveTo,
+	getPath = getPath,
+	enableDigPath = enableDigPath,
+	disableDigPath = disableDigPath,
+	isDigPathEnabled = isDigPathEnabled,
+	mapName = getPlayerNode,
 }

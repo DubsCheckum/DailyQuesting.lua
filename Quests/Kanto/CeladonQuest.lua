@@ -91,8 +91,4 @@ function CeladonQuest:CeladonHouse()
 	end
 end
 
-function CeladonQuest()
-	
-end
-
 return CeladonQuest
